@@ -1,0 +1,39 @@
+---
+resolver: lts-14.10
+packages:
+  - .
+extra-deps:
+  - taffybar-3.2.1
+  - ConfigFile-1.1.4
+  - broadcast-chan-0.2.0.2
+  - dbus-hslogger-0.1.0.1
+  - gi-cairo-connector-0.0.1
+  - gi-cairo-render-0.0.1
+  - gi-gdkx11-3.0.9
+  - gtk-sni-tray-0.1.6.0
+  - gtk-strut-0.1.3.0
+  - rate-limit-1.4.1
+  - status-notifier-item-0.3.0.4
+  - time-units-1.0.0
+  - xml-helpers-1.0.0
+  - gi-dbusmenugtk3-0.4.8
+  - gi-xlib-2.0.8
+  - gi-dbusmenu-0.4.7
+
+nix:
+  enable: true
+  packages:
+    - atk.dev
+    - cairo
+    - gnome2.pango.dev
+    - gdk_pixbuf
+    - gobject-introspection
+    - libdbusmenu-gtk3
+    - pkgconfig
+    - xlibs.libX11
+    - xlibs.libXScrnSaver
+    - xorg.libXext
+    - xorg.libXrandr
+    - zlib.dev
+    - zlib.out
+    - gtk3-x11.dev
