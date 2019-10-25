@@ -65,14 +65,13 @@ cpuCallback = do
   (_, systemLoad, totalLoad) <- cpuLoad
   return [totalLoad, systemLoad]
 
-customLayoutTitle title = text
-  where text = if "Tabbed" `T.isPrefixOf` title
-                then highlight "00FF00" (T.drop 7 title)
-                else highlight "FF0000" title
-        highlight color text = T.pack $ "<span fgcolor='#" ++ color ++ "'>" ++ T.unpack text ++ "</span>"
+customLayoutTitle = text
+  where text title | "Tabbed" `T.isPrefixOf` title = highlight "00FF00" (T.drop 7 title)
+        text title  = highlight "FF0000" title
+        highlight color text = "<span fgcolor='#" <> color <> "'>" <> text <> "</span>"
 
 formatMemoryUsageRatio :: Double -> Text
-formatMemoryUsageRatio n = T.pack $ "⛦: " ++ show (roundInt (n * 100)) ++ "%"
+formatMemoryUsageRatio n = "⛦: " <> T.pack (show (roundInt (n * 100))) <> "%"
   where roundInt = round :: Double -> Int
 
 getResource :: String -> IO (Maybe FilePath)
@@ -89,11 +88,11 @@ myCmdPoll interval def cmdline = pollingLabelNew interval cmdOutput
 
 routeInfo = myCmdPoll 5 "nogw" cmdline
   where cmdline = "default-routes.sh" |> replaceNetAliasesCmd |> mergeCmd
-        replaceNetAliasesCmd = "awk " ++ awkcmd ++ " " ++ netAliasesPath ++ " -"
+        replaceNetAliasesCmd = "awk " <> awkcmd <> " " <> netAliasesPath <> " -"
           where awkcmd = "'NR==FNR{map[$1]=$2;next}{for (i in map) gsub(i,map[i]); print $0}'"
         netAliasesPath = "/home/roosemberth/.local/var/lib/taffybar-net-lut"
         mergeCmd = "paste -s -d ',' | sed 's/,/, /g'"
-        a |> b = a ++ " | " ++ b
+        a |> b = a <> " | " <> b
 
 -- Widgets
 currentWindow = windowsNew defaultWindowsConfig
@@ -142,4 +141,4 @@ myConfig = SimpleTaffyConfig
 main = do
   cssPath <- getResource "taffybar.css"
   dyreTaffybarMain $ withBatteryRefresh $ withLogServer $ withToggleServer $
-                     toTaffyConfig myConfig {cssPath = cssPath}
+    toTaffyConfig myConfig { cssPath = cssPath }
