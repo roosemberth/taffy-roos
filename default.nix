@@ -1,6 +1,12 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  drv = pkgs.haskellPackages.callCabal2nix "taffy-roos" ./. {};
+  haskellPackages = pkgs.haskellPackages.override { 
+    overrides = self: super: {
+      taffybar = pkgs.haskell.lib.appendPatch super.taffybar
+        ./0001-MPRIS2-Add-fallback-mechanism-when-the-default-icon-.patch;
+    };
+  };
+  drv = haskellPackages.callCabal2nix "taffy-roos" ./. {};
 in drv.overrideDerivation(self: {
   nativeBuildInputs = self.nativeBuildInputs ++ [ pkgs.wrapGAppsHook ];
   preFixup = ''

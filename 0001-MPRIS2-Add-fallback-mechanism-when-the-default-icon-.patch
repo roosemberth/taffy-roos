@@ -1,0 +1,44 @@
+From 1d799b66cebbaaf1764e6b994fc6e21801abe106 Mon Sep 17 00:00:00 2001
+From: Roosembert Palacios <roosembert.palacios@epfl.ch>
+Date: Fri, 25 Oct 2019 03:34:31 +0200
+Subject: [PATCH] MPRIS2: Add fallback mechanism when the default icon cannot
+ be loaded
+
+Signed-off-by: Roosembert Palacios <roosembert.palacios@epfl.ch>
+---
+ src/System/Taffybar/Widget/MPRIS2.hs | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/src/System/Taffybar/Widget/MPRIS2.hs b/src/System/Taffybar/Widget/MPRIS2.hs
+index d2ac2ae..a992d1a 100644
+--- a/src/System/Taffybar/Widget/MPRIS2.hs
++++ b/src/System/Taffybar/Widget/MPRIS2.hs
+@@ -39,6 +39,7 @@ import           System.Environment.XDG.DesktopEntry
+ import           System.Taffybar.Util
+ import           System.Taffybar.Widget.Generic.AutoSizeImage
+ import           System.Taffybar.Widget.Util
++import           System.Taffybar.WindowIcon (pixBufFromColor)
+ import           Text.Printf
+ 
+ mprisLog :: (MonadIO m, Show t) => Priority -> String -> t -> m ()
+@@ -58,10 +59,15 @@ mpris2New = asks sessionDBusClient >>= \client -> lift $ do
+     newPlayerWidget :: BusName -> IO MPRIS2PlayerWidget
+     newPlayerWidget busName =
+       do
+-        let logErrorAndLoadDefault size err =
++        let loadDefault size = catchGErrorsAsLeft (loadIcon size "play.svg")
++                >>= either failure return
++              where failure err =
++                      mprisLog WARNING "Failed to load default image: %s" err >>
++                      pixBufFromColor size 0
++            logErrorAndLoadDefault size err =
+               mprisLog WARNING "Failed to get MPRIS icon: %s" err >>
+               mprisLog WARNING "MPRIS failure for: %s" busName >>
+-                       loadIcon size "play.svg"
++              loadDefault size
+             makeExcept ::
+               String -> (a -> IO (Maybe b)) -> a -> ExceptT String IO b
+             makeExcept errorString actionBuilder =
+-- 
+2.23.0
+

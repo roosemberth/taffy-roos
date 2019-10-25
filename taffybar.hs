@@ -133,7 +133,7 @@ myConfig = SimpleTaffyConfig
     , ping
     , routeInfo
     , network
- -- , mpris2New
+    , mpris2New
     ]
   , cssPath = Nothing
   , startupHook = return ()
