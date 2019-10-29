@@ -7,8 +7,8 @@ let
     };
   };
   drv = haskellPackages.callCabal2nix "taffy-roos" ./. {};
-in drv.overrideDerivation(self: {
-  nativeBuildInputs = self.nativeBuildInputs ++ [ pkgs.wrapGAppsHook ];
+in drv.overrideAttrs(old: {
+  nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.wrapGAppsHook ];
   preFixup = ''
     gappsWrapperArgs+=(
       --prefix GDK_PIXBUF_MODULE_FILE : "$(echo ${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/*/loaders.cache)"
