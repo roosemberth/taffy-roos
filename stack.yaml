@@ -33,6 +33,7 @@ nix:
     - xlibs.libX11
     - xlibs.libXScrnSaver
     - xorg.libXext
+    - xlibs.libXinerama
     - xorg.libXrandr
     - zlib.dev
     - zlib.out
